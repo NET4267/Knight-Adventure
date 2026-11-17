@@ -922,14 +922,15 @@ if (gameCanvas && !document.getElementById('adTop')) {
   gameCanvas.parentNode.insertBefore(topAd, gameCanvas);
 }
 </script>
-  <script>
-window._lang = localStorage.getItem('kn_lang') || 'r';
+ <script>
+window._lang = localStorage.getItem('kn_lang') || 'en';
 
 const DICT = {
   '⏸ Меню (Esc)': '⏸ Menu (Esc)',
   'Магазин (B)': 'Shop (B)',
   'Рестарт (R)': 'Restart (R)',
   '📺 +500 очков (Реклама)': '📺 +500 pts (Ad)',
+  '📺 +1000 очков (Реклама)': '📺 +500 pts (Ad)',
   '⏸ ПАУЗА / МЕНЮ': '⏸ PAUSE / MENU',
   'Звук эффектов:': 'SFX Volume:',
   'Громкость музыки:': 'Music Volume:',
@@ -945,44 +946,44 @@ const DICT = {
   '👑 Админ: ВКЛ (Бог + 1М)': '👑 Admin: ON (God + 1M)',
   '▶ Продолжить (Esc)': '▶ Resume (Esc)',
   '🚪 Выход (Завершить)': '🚪 Quit (End Game)',
+  '📺 РЕКЛАМНАЯ ПАУЗА': '📺 AD BREAK',
+  '📢 РЕКЛАМНЫЙ ПЕРЕРЫВ': '📢 COMMERCIAL BREAK',
+  '[ Место для рекламного баннера 728x90 — вставьте сюда скрипт вашей рекламной сети ]': '[ Banner Ad Space 728x90 ]',
+  '[ Слот для видео-рекламы или блока РСЯ / Adsterra ]': '[ Rewarded Ad Space 300x250 ]',
+  '[ Слот для баннера 300×250 или Interstitial-скрипта ]': '[ Interstitial Ad Space 300x250 ]',
+  '[ Левый баннер\n160×600 ]': '[ Left Ad\n160×600 ]',
+  '[ Правый баннер\n160×600 ]': '[ Right Ad\n160×600 ]',
   'Управление: A/D — движение | Пробел — прыжок и ранец | ЛКМ — атака | ПКМ — щит | B — магазин | Esc — меню':
   'Controls: A/D — move | Space — jump & jetpack | LMB — attack | RMB — shield | B — shop | Esc — menu'
 };
 
-// Словарь локаций, врагов и предметов внутри игры
 const GAME_WORDS = {
-  'Лес': 'Forest',
-  'Пещеры': 'Caves',
-  'Вулкан': 'Volcano',
-  'Зима': 'Winter',
-  'Руины': 'Ruins',
-  'Пустыня': 'Desert',
-  'Замок': 'Castle',
-  'Бездна': 'Abyss',
-  'Космос': 'Space',
-  'Ад': 'Hell',
-  'Реактивный ранец (Полет)': 'Jetpack (Flight)',
-  'УР:': 'LVL:',
-  'ОЧКИ:': 'SCORE:',
-  'БОСС:': 'BOSS:',
-  'МАГАЗИН (Очки:': 'SHOP (Score:',
-  'ОРУЖИЕ (21)': 'WEAPONS (21)',
-  'БРОНЯ': 'ARMOR',
-  'ПИТОМЦЫ': 'PETS',
-  '[ВЫБРАНО]': '[EQUIPPED]',
-  'Выбрать': 'Equip',
-  '[НАДЕТО]': '[EQUIPPED]',
-  'Надеть': 'Equip',
-  '[С ВАМИ]': '[ACTIVE]',
-  'Призвать': 'Summon',
-  '← Назад': '← Prev',
-  'Стр.': 'Page',
+  'Лес': 'Forest', 'Пещеры': 'Caves', 'Вулкан': 'Volcano', 'Зима': 'Winter',
+  'Руины': 'Ruins', 'Пустыня': 'Desert', 'Замок': 'Castle', 'Бездна': 'Abyss',
+  'Космос': 'Space', 'Ад': 'Hell',
+  'УР:': 'LVL:', 'ОЧКИ:': 'SCORE:', 'БОСС:': 'BOSS:',
+  'МАГАЗИН (Очки:': 'SHOP (Score:', 'ОРУЖИЕ (21)': 'WEAPONS (21)',
+  'БРОНЯ': 'ARMOR', 'ПИТОМЦЫ': 'PETS',
+  '[ВЫБРАНО]': '[EQUIPPED]', 'Выбрать': 'Equip',
+  '[НАДЕТО]': '[EQUIPPED]', 'Надеть': 'Equip',
+  '[С ВАМИ]': '[ACTIVE]', 'Призвать': 'Summon',
+  '← Назад': '← Prev', 'Вперед →': 'Next →', 'Стр.': 'Page',
   'Продолжить (B)': 'Continue (B)',
   'ИГРА ОКОНЧЕНА (Нажми R)': 'GAME OVER (Press R)',
   '🏆 ТАБЛИЦА РЕКОРДОВ (ТОП-5):': '🏆 HIGH SCORES (TOP-5):',
-  'место —': 'place —',
-  'очков': 'pts',
-  'оч.': 'pts'
+  'место —': 'place —', 'очков': 'pts', 'оч.': 'pts',
+  'Ржавый меч': 'Rusty Sword', 'Кинжал': 'Dagger', 'Копье': 'Spear',
+  'Боевой топор': 'Battle Axe', 'Катаны': 'Katanas', 'Молот': 'Warhammer',
+  'Пистолет': 'Pistol', 'Дробовик': 'Shotgun', 'Автомат': 'Rifle',
+  'Снайперка': 'Sniper', 'Арбалет': 'Crossbow', 'Огненный посох': 'Fire Staff',
+  'Ледяной жезл': 'Ice Wand', 'Лазер': 'Laser Gun', 'Плазмомет': 'Plasma Rifle',
+  'Миниган': 'Minigun', 'Ракетница': 'Rocket Launcher', 'Меч света': 'Lightsaber',
+  'Посох молний': 'Lightning Staff', 'Аннигилятор': 'Annihilator', 'Клинок Бездны': 'Abyss Blade',
+  'Кожаная': 'Leather', 'Кольчуга': 'Chainmail', 'Железная': 'Iron Armor',
+  'Золотая': 'Gold Armor', 'Алмазная': 'Diamond', 'Броня Титана': 'Titan Armor',
+  'Ворон': 'Raven', 'Волк': 'Wolf', 'Фея': 'Fairy', 'Дракончик': 'Baby Dragon', 'Феникс': 'Phoenix',
+  'Реактивный ранец': 'Jetpack', 'Купить': 'Buy', 'Вкл': 'On', 'Выкл': 'Off',
+  'Недостаточно очков!': 'Not enough score!', 'Куплено!': 'Purchased!'
 };
 
 function applyLang() {
@@ -1021,16 +1022,27 @@ const _origFillText = CanvasRenderingContext2D.prototype.fillText;
 CanvasRenderingContext2D.prototype.fillText = function(text, x, y, maxW) {
   if (window._lang === 'en' && typeof text === 'string') {
     for (const [ru, en] of Object.entries(GAME_WORDS)) {
-      if (text.includes(ru)) text = text.replace(ru, en);
+      if (text.includes(ru)) text = text.replaceAll(ru, en);
     }
   }
   return _origFillText.call(this, text, x, y, maxW);
 };
 
+// Перевод динамических надписей на кнопках рекламы
+setInterval(() => {
+  if (window._lang !== 'en') return;
+  const b1 = document.getElementById('adCloseBtn');
+  if (b1 && b1.innerText.includes('Подождите')) b1.innerText = b1.innerText.replace('Подождите', 'Wait').replace('сек...', 'sec...');
+  if (b1 && b1.innerText.includes('Забрать')) b1.innerText = b1.innerText.replace('Забрать', 'Claim').replace('очков', 'pts');
+  const b2 = document.getElementById('autoAdCloseBtn');
+  if (b2 && b2.innerText.includes('Закрыть через')) b2.innerText = b2.innerText.replace('Закрыть через', 'Close in').replace('сек...', 'sec...');
+  if (b2 && b2.innerText.includes('Продолжить игру')) b2.innerText = 'Resume game ✖';
+}, 300);
+
 if (!localStorage.getItem('kn_lang') && navigator.language && navigator.language.startsWith('ru')) {
   window._lang = 'ru';
 }
-setTimeout(applyLang, 100);
+setTimeout(applyLang, 150);
 </script>
 </body>
 </html>
