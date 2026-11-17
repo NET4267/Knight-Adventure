@@ -966,6 +966,31 @@ if (!localStorage.getItem('kn_lang') && navigator.language && navigator.language
 }
 setTimeout(applyLang, 150);
 </script>
+  <script>
+// Принудительно подгружаем баннер MyBid при каждом открытии рекламного окна
+function reloadMyBidAds() {
+  const old = document.querySelector('script[src*="mbidadm.com"]');
+  if (old) old.remove();
+  const s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://mbidadm.com' + Date.now();
+  s.setAttribute('data-admpid', '472878');
+  document.body.appendChild(s);
+}
+
+// Следим за открытием обоих рекламных окон
+const adObs = new MutationObserver(() => {
+  const m1 = document.getElementById('adModal');
+  const m2 = document.getElementById('autoAdModal');
+  if ((m1 && m1.style.display === 'flex') || (m2 && m2.style.display === 'flex')) {
+    reloadMyBidAds();
+  }
+});
+['adModal', 'autoAdModal'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) adObs.observe(el, { attributes: true, attributeFilter: ['style'] });
+});
+</script>
 <script async src="https://js.mbidadm.com/static/scripts.js" data-admpid="472878"></script>
 </body>
 </html>
