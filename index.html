@@ -844,17 +844,6 @@ if (ctrlBar) {
   ctrlBar.after(hint);
 }
 </script>
-<script>
-// Создаем верхний рекламный баннер (728x90) над игровым экраном
-const gameCanvas = document.querySelector('canvas');
-if (gameCanvas && !document.getElementById('adTop')) {
-  const topAd = document.createElement('div');
-  topAd.id = 'adTop';
-  topAd.style.cssText = 'margin: 0 auto 10px auto; width:728px; height:90px; background:#161925; border:1px dashed #555; display:flex; align-items:center; justify-content:center; color:#888; font-size:13px; border-radius:6px;';
-  topAd.innerText = '[ Верхний рекламный баннер 728×90 ]';
-  gameCanvas.parentNode.insertBefore(topAd, gameCanvas);
-}
-</script>
  <script>
 window._lang = localStorage.getItem('kn_lang') || 'en';
 
