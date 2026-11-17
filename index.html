@@ -870,6 +870,7 @@ const adObs = new MutationObserver(() => {
 });
 </script>
   <!-- 1. Нижний рекламный баннер MyBid (300x100) -->
+<!-- 1. Нижний рекламный баннер MyBid (300x100) -->
 <div id="adBanner" style="margin:10px auto 0 auto; width:300px; height:100px; background:#161925; display:flex; align-items:center; justify-content:center; border-radius:6px; overflow:hidden;">
   <div data-banner-id="2031959"></div>
 </div>
@@ -897,16 +898,24 @@ const adObs = new MutationObserver(() => {
 </div>
 
 <script>
-// Настройка кнопки "+500 очков (Реклама)" в нижней панели
+// Переделываем кнопку "Донат" в "+500 очков (Реклама)"
 const donBtn500 = document.querySelector('.don');
 if (donBtn500) {
-  donBtn500.innerText = '📺 +500 очков (Реклама)';
+  donBtn500.innerText = window._lang === 'en' ? '📺 +500 pts (Ad)' : '📺 +500 очков (Реклама)';
   donBtn500.style.background = '#0077b6';
   donBtn500.style.borderColor = '#4cc9f0';
 }
+
+// Проверяем, не пропала ли кнопка "Рестарт (R)", и возвращаем её при необходимости
+const barCheck = document.querySelector('.bar');
+if (barCheck && !barCheck.innerText.includes('Рестарт') && !barCheck.innerText.includes('Restart')) {
+  const rBtn = document.createElement('button');
+  rBtn.innerText = window._lang === 'en' ? 'Restart (R)' : 'Рестарт (R)';
+  rBtn.onclick = () => { if (typeof resetGame === 'function') resetGame(); else if (typeof gen === 'function') { score = 0; lives = 3; lvl = 1; st = 'play'; gen(); } };
+  barCheck.insertBefore(rBtn, donBtn500 || null);
 }
 
-// Запуск рекламы за +500 очков (таймер 10 секунд)
+// Реклама за +500 очков (таймер 10 секунд)
 donate = function() {
   k.KeyA = 0; k.KeyD = 0; k.ArrowLeft = 0; k.ArrowRight = 0; k.Space = 0;
   const wasPlay = (st === 'play');
@@ -915,7 +924,6 @@ donate = function() {
   const modal = document.getElementById('adModal');
   const btn = document.getElementById('adCloseBtn');
   modal.style.display = 'flex';
-  refreshMyBid();
   
   let sec = 10;
   btn.disabled = true;
@@ -955,7 +963,6 @@ setInterval(() => {
   const modal = document.getElementById('autoAdModal');
   const btn = document.getElementById('autoAdCloseBtn');
   modal.style.display = 'flex';
-  refreshMyBid();
 
   let sec = 5;
   btn.disabled = true;
@@ -982,7 +989,7 @@ setInterval(() => {
 }, 60000);
 </script>
 
-<!-- Главный скрипт рекламной сети MyBid -->
+<!-- Главный скрипт MyBid (строго один раз в самом конце) -->
 <script async src="https://mbidadm.com" data-admpid="472878"></script>
 </body>
 </html>
