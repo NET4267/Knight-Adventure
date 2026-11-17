@@ -922,5 +922,116 @@ if (gameCanvas && !document.getElementById('adTop')) {
   gameCanvas.parentNode.insertBefore(topAd, gameCanvas);
 }
 </script>
+  <script>
+window._lang = localStorage.getItem('kn_lang') || 'r';
+
+const DICT = {
+  '⏸ Меню (Esc)': '⏸ Menu (Esc)',
+  'Магазин (B)': 'Shop (B)',
+  'Рестарт (R)': 'Restart (R)',
+  '📺 +500 очков (Реклама)': '📺 +500 pts (Ad)',
+  '⏸ ПАУЗА / МЕНЮ': '⏸ PAUSE / MENU',
+  'Звук эффектов:': 'SFX Volume:',
+  'Громкость музыки:': 'Music Volume:',
+  'Сложность очков:': 'Score Difficulty:',
+  '÷1 (Обычная)': '÷1 (Normal)',
+  '÷2 (Сложная)': '÷2 (Hard)',
+  '÷5 (Хардкор)': '÷5 (Hardcore)',
+  '÷10 (Кошмар)': '÷10 (Nightmare)',
+  '÷20 (Невозможная)': '÷20 (Impossible)',
+  '💾 Сохранить': '💾 Save',
+  '📂 Загрузить': '📂 Load',
+  '👑 Админ: ВЫКЛ': '👑 Admin: OFF',
+  '👑 Админ: ВКЛ (Бог + 1М)': '👑 Admin: ON (God + 1M)',
+  '▶ Продолжить (Esc)': '▶ Resume (Esc)',
+  '🚪 Выход (Завершить)': '🚪 Quit (End Game)',
+  'Управление: A/D — движение | Пробел — прыжок и ранец | ЛКМ — атака | ПКМ — щит | B — магазин | Esc — меню':
+  'Controls: A/D — move | Space — jump & jetpack | LMB — attack | RMB — shield | B — shop | Esc — menu'
+};
+
+// Словарь локаций, врагов и предметов внутри игры
+const GAME_WORDS = {
+  'Лес': 'Forest',
+  'Пещеры': 'Caves',
+  'Вулкан': 'Volcano',
+  'Зима': 'Winter',
+  'Руины': 'Ruins',
+  'Пустыня': 'Desert',
+  'Замок': 'Castle',
+  'Бездна': 'Abyss',
+  'Космос': 'Space',
+  'Ад': 'Hell',
+  'Реактивный ранец (Полет)': 'Jetpack (Flight)',
+  'УР:': 'LVL:',
+  'ОЧКИ:': 'SCORE:',
+  'БОСС:': 'BOSS:',
+  'МАГАЗИН (Очки:': 'SHOP (Score:',
+  'ОРУЖИЕ (21)': 'WEAPONS (21)',
+  'БРОНЯ': 'ARMOR',
+  'ПИТОМЦЫ': 'PETS',
+  '[ВЫБРАНО]': '[EQUIPPED]',
+  'Выбрать': 'Equip',
+  '[НАДЕТО]': '[EQUIPPED]',
+  'Надеть': 'Equip',
+  '[С ВАМИ]': '[ACTIVE]',
+  'Призвать': 'Summon',
+  '← Назад': '← Prev',
+  'Стр.': 'Page',
+  'Продолжить (B)': 'Continue (B)',
+  'ИГРА ОКОНЧЕНА (Нажми R)': 'GAME OVER (Press R)',
+  '🏆 ТАБЛИЦА РЕКОРДОВ (ТОП-5):': '🏆 HIGH SCORES (TOP-5):',
+  'место —': 'place —',
+  'очков': 'pts',
+  'оч.': 'pts'
+};
+
+function applyLang() {
+  const isEn = (window._lang === 'en');
+  document.querySelectorAll('button, div, span, h2, h3, option').forEach(el => {
+    if (el.children.length === 0 && el.innerText) {
+      const txt = el.innerText.trim();
+      if (isEn && DICT[txt]) {
+        el.dataset.ru = txt;
+        el.innerText = DICT[txt];
+      } else if (!isEn && el.dataset.ru) {
+        el.innerText = el.dataset.ru;
+      }
+    }
+  });
+  const lBtn = document.getElementById('langBtn');
+  if (lBtn) lBtn.innerText = isEn ? '🌐 Language: EN' : '🌐 Язык: RU';
+}
+
+function toggleLang() {
+  window._lang = (window._lang === 'ru') ? 'en' : 'ru';
+  localStorage.setItem('kn_lang', window._lang);
+  applyLang();
+}
+
+const bBar = document.querySelector('.bar');
+if (bBar && !document.getElementById('langBtn')) {
+  const lb = document.createElement('button');
+  lb.id = 'langBtn';
+  lb.innerText = window._lang === 'en' ? '🌐 Language: EN' : '🌐 Язык: RU';
+  lb.onclick = toggleLang;
+  bBar.appendChild(lb);
+}
+
+const _origFillText = CanvasRenderingContext2D.prototype.fillText;
+CanvasRenderingContext2D.prototype.fillText = function(text, x, y, maxW) {
+  if (window._lang === 'en' && typeof text === 'string') {
+    for (const [ru, en] of Object.entries(GAME_WORDS)) {
+      if (text.includes(ru)) text = text.replace(ru, en);
+    }
+  }
+  return _origFillText.call(this, text, x, y, maxW);
+};
+
+if (!localStorage.getItem('kn_lang') && navigator.language && navigator.language.startsWith('ru')) {
+  window._lang = 'ru';
+}
+}
+setTimeout(applyLang, 100);
+</script>
 </body>
 </html>
