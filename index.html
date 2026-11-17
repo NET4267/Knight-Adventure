@@ -904,16 +904,6 @@ if (donBtn500) {
   donBtn500.style.background = '#0077b6';
   donBtn500.style.borderColor = '#4cc9f0';
 }
-
-// Функция перезагрузки скрипта MyBid при открытии окна
-function refreshMyBid() {
-  const old = document.querySelector('script[src*="mbidadm.com"]');
-  if (old) old.remove();
-  const s = document.createElement('script');
-  s.async = true;
-  s.src = 'https://mbidadm.com' + Date.now();
-  s.setAttribute('data-admpid', '472878');
-  document.body.appendChild(s);
 }
 
 // Запуск рекламы за +500 очков (таймер 10 секунд)
