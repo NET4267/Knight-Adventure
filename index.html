@@ -689,130 +689,8 @@ setInterval(() => {
   }
 }, 16);
 </script>
-<!-- Рекламный баннер под игрой (728x90) -->
-  <!-- Нижний рекламный баннер (300x100) -->
-<div id="adBanner" style="margin:10px auto 0 auto; width:300px; height:100px; background:#161925; display:flex; align-items:center; justify-content:center; border-radius:6px; overflow:hidden;">
-  <div data-banner-id="2031959"></div>
-</div>
 
-<!-- Окно рекламы за награду (+500 очков) -->
-<div id="adModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:200; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
-  <div style="background:#1a1d2e; border:2px solid #ffd166; padding:24px; border-radius:10px; width:360px; text-align:center;">
-    <h3 style="margin:0 0 12px 0; color:#ffd166;">📺 AD BREAK</h3>
-    <div id="adVideoSlot" style="width:300px; height:250px; margin:0 auto 14px auto; background:#0d0e14; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-      <div data-banner-id="2031958"></div>
-    </div>
-    <button id="adCloseBtn" disabled style="padding:10px 20px; font-size:14px; background:#414868; color:#aaa; border:none; border-radius:6px;">Wait 10 sec...</button>
-  </div>
-</div>
 
-<!-- Окно автоматической рекламы раз в 1 минуту -->
-<div id="autoAdModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:250; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
-  <div style="background:#1a1d2e; border:2px solid #4cc9f0; padding:24px; border-radius:10px; width:360px; text-align:center;">
-    <h3 style="margin:0 0 12px 0; color:#4cc9f0;">📢 COMMERCIAL BREAK</h3>
-    <div id="autoAdSlot" style="width:300px; height:250px; margin:0 auto 14px auto; background:#0d0e14; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-      <div data-banner-id="2031958"></div>
-    </div>
-    <button id="autoAdCloseBtn" disabled style="padding:10px 20px; font-size:14px; background:#414868; color:#aaa; border:none; border-radius:6px;">Close in 5 sec...</button>
-  </div>
-</div>
-
-<script>
-// Запуск рекламы каждые 2 минуты (120 000 мс)
-setInterval(() => {
-  // Не показываем, если уже открыта другая реклама, меню паузы или экран проигрыша
-  if (st !== 'play') return;
-  if (document.getElementById('adModal')?.style.display === 'flex') return;
-
-  // Сбрасываем клавиши и ставим игру на паузу
-  k.KeyA = 0; k.KeyD = 0; k.ArrowLeft = 0; k.ArrowRight = 0; k.Space = 0;
-  st = 'pause';
-
-  const modal = document.getElementById('autoAdModal');
-  const btn = document.getElementById('autoAdCloseBtn');
-  modal.style.display = 'flex';
-
-  let sec = 5;
-  btn.disabled = true;
-  btn.style.background = '#414868';
-  btn.style.color = '#aaa';
-  btn.innerText = `Закрыть через ${sec} сек...`;
-
-  const timer = setInterval(() => {
-    sec--;
-    if (sec > 0) {
-      btn.innerText = `Закрыть через ${sec} сек...`;
-    } else {
-      clearInterval(timer);
-      btn.disabled = false;
-      btn.style.background = '#3a86ff';
-      btn.style.color = '#fff';
-      btn.innerText = 'Продолжить игру ✖';
-      btn.onclick = () => {
-        modal.style.display = 'none';
-        if (st === 'pause') st = 'play';
-      };
-    }
-  }, 1000);
-}, 20000);
-</script>
-<script>
-const donBtn500 = document.querySelector('.don');
-if (donBtn500) {
-  donBtn500.innerText = '📺 +1000 очков (Реклама)';
-  donBtn500.style.background = '#0077b6';
-  donBtn500.style.borderColor = '#4cc9f0';
-}
-
-donate = function() {
-  k.KeyA = 0; k.KeyD = 0; k.ArrowLeft = 0; k.ArrowRight = 0; k.Space = 0;
-  const wasPlay = (st === 'play');
-  if (wasPlay) st = 'pause';
-  
-  const modal = document.getElementById('adModal');
-  const btn = document.getElementById('adCloseBtn');
-  modal.style.display = 'flex';
-  
-  let sec = 10;
-  btn.disabled = true;
-  btn.style.background = '#414868';
-  btn.style.color = '#aaa';
-  btn.innerText = `Подождите ${sec} сек...`;
-
-  const timer = setInterval(() => {
-    sec--;
-    if (sec > 0) {
-      btn.innerText = `Подождите ${sec} сек...`;
-    } else {
-      clearInterval(timer);
-      btn.disabled = false;
-      btn.style.background = '#3a86ff';
-      btn.style.color = '#fff';
-      btn.innerText = 'Забрать +1000 очков ✖';
-      btn.onclick = () => {
-        modal.style.display = 'none';
-        score += 1000;
-        sfx('coin');
-        if (st === 'shop') shopMsg = 'Начислено +500 очков за просмотр!';
-        if (wasPlay) st = 'play';
-      };
-    }
-  }, 1000);
-};
-let _secretBuf = '';
-window.addEventListener('keydown', e => {
-  if (e.key.length === 1) {
-    _secretBuf = (_secretBuf + e.key).slice(-12);
-    if (_secretBuf.endsWith('peq')) {
-      const btn = document.getElementById('aBtn');
-      if (btn) {
-        btn.style.display = 'block';
-        sfx('coin');
-      }
-    }
-  }
-});
-</script>
 <script>
 // 1. Меняем заголовок вкладки и добавляем иконку-меч
 document.title = '⚔️ Knight Adventure — Браузерная RPG';
@@ -991,6 +869,130 @@ const adObs = new MutationObserver(() => {
   if (el) adObs.observe(el, { attributes: true, attributeFilter: ['style'] });
 });
 </script>
-<script async src="https://js.mbidadm.com/static/scripts.js" data-admpid="472878"></script>
+  <!-- 1. Нижний рекламный баннер MyBid (300x100) -->
+<div id="adBanner" style="margin:10px auto 0 auto; width:300px; height:100px; background:#161925; display:flex; align-items:center; justify-content:center; border-radius:6px; overflow:hidden;">
+  <div data-banner-id="2031959"></div>
+</div>
+
+<!-- 2. Окно рекламы за награду (+500 очков, 10 сек) -->
+<div id="adModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:200; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
+  <div style="background:#1a1d2e; border:2px solid #ffd166; padding:24px; border-radius:10px; width:360px; text-align:center;">
+    <h3 style="margin:0 0 12px 0; color:#ffd166;">📺 AD BREAK</h3>
+    <div id="adVideoSlot" style="width:300px; height:250px; margin:0 auto 14px auto; background:#0d0e14; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+      <div data-banner-id="2031958"></div>
+    </div>
+    <button id="adCloseBtn" disabled style="padding:10px 20px; font-size:14px; background:#414868; color:#aaa; border:none; border-radius:6px;">Wait 10 sec...</button>
+  </div>
+</div>
+
+<!-- 3. Окно автоматической рекламы раз в 1 минуту (5 сек) -->
+<div id="autoAdModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:250; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
+  <div style="background:#1a1d2e; border:2px solid #4cc9f0; padding:24px; border-radius:10px; width:360px; text-align:center;">
+    <h3 style="margin:0 0 12px 0; color:#4cc9f0;">📢 COMMERCIAL BREAK</h3>
+    <div id="autoAdSlot" style="width:300px; height:250px; margin:0 auto 14px auto; background:#0d0e14; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+      <div data-banner-id="2031958"></div>
+    </div>
+    <button id="autoAdCloseBtn" disabled style="padding:10px 20px; font-size:14px; background:#414868; color:#aaa; border:none; border-radius:6px;">Close in 5 sec...</button>
+  </div>
+</div>
+
+<script>
+// Настройка кнопки "+500 очков (Реклама)" в нижней панели
+const donBtn500 = document.querySelector('.don');
+if (donBtn500) {
+  donBtn500.innerText = '📺 +500 очков (Реклама)';
+  donBtn500.style.background = '#0077b6';
+  donBtn500.style.borderColor = '#4cc9f0';
+}
+
+// Функция перезагрузки скрипта MyBid при открытии окна
+function refreshMyBid() {
+  const old = document.querySelector('script[src*="mbidadm.com"]');
+  if (old) old.remove();
+  const s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://mbidadm.com' + Date.now();
+  s.setAttribute('data-admpid', '472878');
+  document.body.appendChild(s);
+}
+
+// Запуск рекламы за +500 очков (таймер 10 секунд)
+donate = function() {
+  k.KeyA = 0; k.KeyD = 0; k.ArrowLeft = 0; k.ArrowRight = 0; k.Space = 0;
+  const wasPlay = (st === 'play');
+  if (wasPlay) st = 'pause';
+  
+  const modal = document.getElementById('adModal');
+  const btn = document.getElementById('adCloseBtn');
+  modal.style.display = 'flex';
+  refreshMyBid();
+  
+  let sec = 10;
+  btn.disabled = true;
+  btn.style.background = '#414868';
+  btn.style.color = '#aaa';
+  btn.innerText = window._lang === 'en' ? `Wait ${sec} sec...` : `Подождите ${sec} сек...`;
+
+  const timer = setInterval(() => {
+    sec--;
+    if (sec > 0) {
+      btn.innerText = window._lang === 'en' ? `Wait ${sec} sec...` : `Подождите ${sec} сек...`;
+    } else {
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.style.background = '#3a86ff';
+      btn.style.color = '#fff';
+      btn.innerText = window._lang === 'en' ? 'Claim +500 pts ✖' : 'Забрать +500 очков ✖';
+      btn.onclick = () => {
+        modal.style.display = 'none';
+        score += 500;
+        sfx('coin');
+        if (st === 'shop') shopMsg = window._lang === 'en' ? 'Claimed +500 pts!' : 'Начислено +500 очков за просмотр!';
+        if (wasPlay) st = 'play';
+      };
+    }
+  }, 1000);
+};
+
+// Автоматическая реклама раз в 1 минуту (таймер 5 секунд)
+setInterval(() => {
+  if (st !== 'play') return;
+  if (document.getElementById('adModal').style.display === 'flex') return;
+
+  k.KeyA = 0; k.KeyD = 0; k.ArrowLeft = 0; k.ArrowRight = 0; k.Space = 0;
+  st = 'pause';
+
+  const modal = document.getElementById('autoAdModal');
+  const btn = document.getElementById('autoAdCloseBtn');
+  modal.style.display = 'flex';
+  refreshMyBid();
+
+  let sec = 5;
+  btn.disabled = true;
+  btn.style.background = '#414868';
+  btn.style.color = '#aaa';
+  btn.innerText = window._lang === 'en' ? `Close in ${sec} sec...` : `Закрыть через ${sec} сек...`;
+
+  const timer = setInterval(() => {
+    sec--;
+    if (sec > 0) {
+      btn.innerText = window._lang === 'en' ? `Close in ${sec} sec...` : `Закрыть через ${sec} сек...`;
+    } else {
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.style.background = '#3a86ff';
+      btn.style.color = '#fff';
+      btn.innerText = window._lang === 'en' ? 'Resume game ✖' : 'Продолжить игру ✖';
+      btn.onclick = () => {
+        modal.style.display = 'none';
+        if (st === 'pause') st = 'play';
+      };
+    }
+  }, 1000);
+}, 60000);
+</script>
+
+<!-- Главный скрипт рекламной сети MyBid -->
+<script async src="https://mbidadm.com" data-admpid="472878"></script>
 </body>
 </html>
