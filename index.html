@@ -690,15 +690,15 @@ setInterval(() => {
 }, 16);
 </script>
 <!-- Рекламный баннер под игрой (728x90) -->
-<div id="adBanner" style="margin-top:10px; width:728px; height:90px; background:#161925; border:1px dashed #555; display:flex; align-items:center; justify-content:center; color:#888; font-size:13px; border-radius:6px;">
+<div id="<div data-banner-id="2031959"></div>" style="margin-top:10px; width:728px; height:90px; background:#161925; border:1px dashed #555; display:flex; align-items:center; justify-content:center; color:#888; font-size:13px; border-radius:6px;">
   [ Место для рекламного баннера 728x90 — вставьте сюда скрипт вашей рекламной сети ]
 </div>
 
 <!-- Окно полноэкранной рекламы за награду -->
-<div id="adModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:200; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
+<div id="<div data-banner-id="2031958"></div>" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:200; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
   <div style="background:#1a1d2e; border:2px solid #ffd166; padding:24px; border-radius:10px; width:420px; text-align:center;">
     <h3 style="margin:0 0 10px 0; color:#ffd166;">📺 РЕКЛАМНАЯ ПАУЗА</h3>
-    <div id="adVideoSlot" style="width:100%; height:200px; background:#0d0e14; border:1px solid #3d445c; display:flex; align-items:center; justify-content:center; color:#aaa; margin-bottom:14px; font-size:14px;">
+    <div id="<div data-banner-id="2031958"></div>" style="width:100%; height:200px; background:#0d0e14; border:1px solid #3d445c; display:flex; align-items:center; justify-content:center; color:#aaa; margin-bottom:14px; font-size:14px;">
       [ Слот для видео-рекламы или блока РСЯ / Adsterra ]
     </div>
     <button id="adCloseBtn" disabled style="padding:10px 20px; font-size:14px; background:#414868; color:#aaa; border:none; border-radius:6px;">Подождите 5 сек...</button>
@@ -754,19 +754,19 @@ function showRewardAd() {
 donate = showRewardAd;
 </script>
 <!-- Левый боковой баннер (160x600) -->
-<div id="adLeft" style="position:fixed; left:12px; top:50%; transform:translateY(-50%); width:160px; height:600px; background:#161925; border:1px dashed #555; display:flex; align-items:center; justify-content:center; text-align:center; color:#888; font-size:12px; border-radius:6px; padding:8px; box-sizing:border-box; z-index:10;">
+<div id="<div data-banner-id="2031958"></div>" style="position:fixed; left:12px; top:50%; transform:translateY(-50%); width:160px; height:600px; background:#161925; border:1px dashed #555; display:flex; align-items:center; justify-content:center; text-align:center; color:#888; font-size:12px; border-radius:6px; padding:8px; box-sizing:border-box; z-index:10;">
   [ Левый баннер<br>160×600 ]
 </div>
 
 <!-- Правый боковой баннер (160x600) -->
-<div id="adRight" style="position:fixed; right:12px; top:50%; transform:translateY(-50%); width:160px; height:600px; background:#161925; border:1px dashed #555; display:flex; align-items:center; justify-content:center; text-align:center; color:#888; font-size:12px; border-radius:6px; padding:8px; box-sizing:border-box; z-index:10;">
+<div id="<div data-banner-id="2031958"></div>" style="position:fixed; right:12px; top:50%; transform:translateY(-50%); width:160px; height:600px; background:#161925; border:1px dashed #555; display:flex; align-items:center; justify-content:center; text-align:center; color:#888; font-size:12px; border-radius:6px; padding:8px; box-sizing:border-box; z-index:10;">
   [ Правый баннер<br>160×600 ]
 </div>
 
 <script>
 // Автоматически скрываем боковые баннеры на узких экранах, чтобы не перекрывать игру
 function checkSideAds() {
-  const show = window.innerWidth >= 1160;
+  const show = window.innerWidth >= 1440;
   document.getElementById('adLeft').style.display = show ? 'flex' : 'none';
   document.getElementById('adRight').style.display = show ? 'flex' : 'none';
 }
@@ -774,10 +774,10 @@ window.addEventListener('resize', checkSideAds);
 checkSideAds();
 </script>
 <!-- Окно автоматической рекламы раз в 2 минуты -->
-<div id="autoAdModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:250; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
+<div id="<div data-banner-id="2031958"></div>" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:250; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
   <div style="background:#1a1d2e; border:2px solid #4cc9f0; padding:24px; border-radius:10px; width:420px; text-align:center;">
     <h3 style="margin:0 0 10px 0; color:#4cc9f0;">📢 РЕКЛАМНЫЙ ПЕРЕРЫВ</h3>
-    <div id="autoAdSlot" style="width:100%; height:250px; background:#0d0e14; border:1px solid #3d445c; display:flex; align-items:center; justify-content:center; color:#aaa; margin-bottom:14px; font-size:14px;">
+    <div id="<div data-banner-id="2031958"></div>" style="width:100%; height:250px; background:#0d0e14; border:1px solid #3d445c; display:flex; align-items:center; justify-content:center; color:#aaa; margin-bottom:14px; font-size:14px;">
       [ Слот для баннера 300×250 или Interstitial-скрипта ]
     </div>
     <button id="autoAdCloseBtn" disabled style="padding:10px 20px; font-size:14px; background:#414868; color:#aaa; border:none; border-radius:6px;">Закрыть через 5 сек...</button>
@@ -1044,5 +1044,6 @@ if (!localStorage.getItem('kn_lang') && navigator.language && navigator.language
 }
 setTimeout(applyLang, 150);
 </script>
+<script async src="https://js.mbidadm.com/static/scripts.js" data-admpid="472878"></script>
 </body>
 </html>
