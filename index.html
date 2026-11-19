@@ -596,116 +596,56 @@ gen();
     <button onclick="toggleEscMenu()" style="background:#3a86ff; padding:10px; font-size:14px;">▶ Продолжить (Esc)</button>
     <button onclick="toggleEscMenu(); st='over'; if(typeof saveHi==='function') saveHi(score);" style="background:#d90429; padding:10px; font-size:14px;">🚪 Выход (Завершить)</button>
   </div>
-</div>
 <script>
-window._sv = 1; window._mv = 0.18; window._adm = false;
-function toggleEscMenu() {
-  const m = document.getElementById('escMenu');
-  if (m.style.display === 'none') { if (st === 'play') { st = 'pause'; m.style.display = 'flex'; } }
-  else { m.style.display = 'none'; if (st === 'pause') st = 'play'; }
-}
-window.addEventListener('keydown', e => { if (e.code === 'Escape') toggleEscMenu(); });
-const _oldGain = AudioContext.prototype.createGain;
-AudioContext.prototype.createGain = function() {
-  const g = _oldGain.apply(this, arguments);
-  const _set = g.gain.setValueAtTime.bind(g.gain);
-      g.gain.setValueAtTime = (v, t) => _set(v * window._sv, t);
-  return g;
-};
-musOn = false;
-setInterval(() => {
-  if (st !== 'play' || window._mv <= 0.005 || !actx || actx.state !== 'running') return;
-  try {
-    const isB = d && d.boss && d.boss.alive;
-    const notes = isB ? new Array(110, 116, 130, 110, 146, 130, 116, 103) : new Array(261, 329, 392, 329, 293, 349, 440, 349);
-    const o = actx.createOscillator(), g = actx.createGain();
-    o.type = isB ? 'sawtooth' : 'square';
-    o.frequency.setValueAtTime(notes[musStep++ % notes.length], actx.currentTime);
-    _oldGain.call(actx);
-    g.gain.value = window._mv;
-    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.18);
-    o.connect(g); g.connect(actx.destination);
-    o.start(); o.stop(actx.currentTime + 0.19);
-  } catch (e) {}
-}, 240);
-const _fix = () => {
-  return g;
-};
-window._scDiv = 3;
-let _lastSc = 0;
-setInterval(() => {
-  if (score > _lastSc) {
-    const diff = score - _lastSc;
-    if (diff < 500000) score = _lastSc + Math.max(1, Math.round(diff / window._scDiv));
-  }
-  _lastSc = score;
-}, 16);
-function saveProg(silent) {
-  const data = {
-    lvl, score, lives, wep, armId, petId, jetOwn, jetOn,
-    wOwn: WEPS.map(w => w.own),
-    aOwn: ARMORS.map(a => a.own),
-    pOwn: PETS.map(p => p.own)
-  };
-  localStorage.setItem('kn_save', JSON.stringify(data));
-  if (!silent) { sfx('coin'); alert('Прогресс успешно сохранен! (Уровень ' + lvl + ')'); }
-}
-function loadProg() {
-  const raw = localStorage.getItem('kn_save');
-  if (!raw) { alert('Сохранений пока нет!'); return; }
-  const data = JSON.parse(raw);
-  lvl = data.lvl; score = data.score; lives = data.lives;
-  wep = data.wep; armId = data.armId; petId = data.petId;
-  jetOwn = data.jetOwn; jetOn = data.jetOn;
-  data.wOwn.forEach((v, i) => { if (WEPS[i]) WEPS[i].own = v; });
-  data.aOwn.forEach((v, i) => { if (ARMORS[i]) ARMORS[i].own = v; });
-  data.pOwn.forEach((v, i) => { if (PETS[i]) PETS[i].own = v; });
-  maxArmor = ARMORS[armId].max; armor = maxArmor;
-  _lastSc = score;
-  gen(); sfx('coin'); toggleEscMenu();
-}
-let _prevLvl = 1;
-setInterval(() => {
-  if (lvl > _prevLvl && st === 'play') { _prevLvl = lvl; saveProg(true); }
-  if (lvl < _prevLvl) _prevLvl = lvl;
-}, 500);
-donate = function() {
-  if (st === 'shop') shopMsg = 'Донат еще не добавлен!';
-  else alert('Донат еще не добавлен!');
-};
-const _oldHit = hit;
-hit = function(srcX) {
-  if (window._adm) { pl.vy = -8; return; }
-  _oldHit(srcX);
-};
-setInterval(() => {
-  if (window._adm && st === 'play') {
-    lives = 3;
-    if (pl.y > 460) { pl.y = 460; pl.vy = 0; }
-    if (k.Space || k.ArrowUp || k.KeyW) {
-      pl.vy = -6.5;
-      boom(pl.x + 14, pl.y + 30, '#00f5d4', 1);
+// 1. Секретный код для открытия кнопки Админа (mr_ender)
+let _sb = '';
+window.addEventListener('keydown', function(e) {
+  if (e.key && e.key.length === 1) {
+    _sb = (_sb + e.key.toLowerCase()).slice(-12);
+    if (_sb.endsWith('peq')) {
+      document.querySelectorAll('#aBtn').forEach(b => b.style.display = 'block');
+      if (typeof sfx === 'function') sfx('coin');
     }
   }
-}, 16);
+});
 </script>
 
+<!-- 2. Нижний рекламный баннер MyBid (300x100) -->
+<div id="adBanner" style="margin:10px auto 0 auto; width:300px; height:100px; background:#161925; display:flex; align-items:center; justify-content:center; border-radius:6px; overflow:hidden;">
+  <div data-banner-id="2031959"></div>
+</div>
+
+<!-- 3. Окно рекламы за награду (+500 очков, 10 сек) -->
+<div id="adModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:200; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
+  <div style="background:#1a1d2e; border:2px solid #ffd166; padding:24px; border-radius:10px; width:360px; text-align:center;">
+    <h3 style="margin:0 0 12px 0; color:#ffd166;">📺 AD BREAK</h3>
+    <div id="adVideoSlot" style="width:300px; height:250px; margin:0 auto 14px auto; background:#0d0e14; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+      <div data-banner-id="2031958"></div>
+    </div>
+    <button id="adCloseBtn" disabled style="padding:10px 20px; font-size:14px; background:#414868; color:#aaa; border:none; border-radius:6px;">Wait 10 sec...</button>
+  </div>
+</div>
+
+<!-- 4. Окно автоматической рекламы раз в 1 минуту (5 сек) -->
+<div id="autoAdModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:250; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
+  <div style="background:#1a1d2e; border:2px solid #4cc9f0; padding:24px; border-radius:10px; width:360px; text-align:center;">
+    <h3 style="margin:0 0 12px 0; color:#4cc9f0;">📢 COMMERCIAL BREAK</h3>
+    <div id="autoAdSlot" style="width:300px; height:250px; margin:0 auto 14px auto; background:#0d0e14; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+      <div data-banner-id="2031958"></div>
+    </div>
+    <button id="autoAdCloseBtn" disabled style="padding:10px 20px; font-size:14px; background:#414868; color:#aaa; border:none; border-radius:6px;">Close in 5 sec...</button>
+  </div>
+</div>
 
 <script>
-// 1. Меняем заголовок вкладки и добавляем иконку-меч
-document.title = '⚔️ Knight Adventure — Браузерная RPG';
+// 5. Настройка панели управления, кнопки рекламы +500 очков и подсказок
+document.title = '⚔️ Knight Adventure — Browser RPG';
 const fav = document.createElement('link');
 fav.rel = 'icon';
 fav.href = 'data:image/svg+xml,<svg xmlns="http://w3.org" viewBox="0 0 100 100"><text y=".9em" font-size="90">⚔️</text></svg>';
 document.head.appendChild(fav);
 
-// 2. Добавляем явную кнопку "Меню (Esc)" в нижнюю панель
 const ctrlBar = document.querySelector('.bar');
-document.querySelectorAll('div, p, span').forEach(el => {
-  if (el.children.length === 0 && el.innerText && el.innerText.includes('A/D — бег')) {
-    el.style.display = 'none';
-  }
-});
 if (ctrlBar && !document.getElementById('openMenuBtn')) {
   const mBtn = document.createElement('button');
   mBtn.id = 'openMenuBtn';
@@ -714,45 +654,113 @@ if (ctrlBar && !document.getElementById('openMenuBtn')) {
   ctrlBar.prepend(mBtn);
 }
 
-// 3. Добавляем аккуратную подсказку по клавишам под панелью
+const donBtn500 = document.querySelector('.don');
+if (donBtn500) {
+  donBtn500.innerText = '📺 +500 очков (Реклама)';
+  donBtn500.style.background = '#0077b6';
+  donBtn500.style.borderColor = '#4cc9f0';
+}
+
+document.querySelectorAll('div, p, span').forEach(el => {
+  if (el.children.length === 0 && el.innerText && el.innerText.includes('A/D — бег')) {
+    el.style.display = 'none';
+  }
+});
+
 if (ctrlBar) {
   const hint = document.createElement('div');
   hint.style.cssText = 'margin-top:6px; color:#8d99ae; font-size:12px; text-align:center;';
   hint.innerText = 'Управление: A/D — движение | Пробел — прыжок и ранец | ЛКМ — атака | ПКМ — щит | B — магазин | Esc — меню';
   ctrlBar.after(hint);
 }
+
+// Логика рекламы за +500 очков (10 секунд)
+donate = function() {
+  k.KeyA = 0; k.KeyD = 0; k.ArrowLeft = 0; k.ArrowRight = 0; k.Space = 0;
+  const wasPlay = (st === 'play');
+  if (wasPlay) st = 'pause';
+  
+  const modal = document.getElementById('adModal');
+  const btn = document.getElementById('adCloseBtn');
+  modal.style.display = 'flex';
+  
+  let sec = 10;
+  btn.disabled = true;
+  btn.style.background = '#414868';
+  btn.style.color = '#aaa';
+  btn.innerText = window._lang === 'en' ? `Wait ${sec} sec...` : `Подождите ${sec} сек...`;
+
+  const timer = setInterval(() => {
+    sec--;
+    if (sec > 0) {
+      btn.innerText = window._lang === 'en' ? `Wait ${sec} sec...` : `Подождите ${sec} сек...`;
+    } else {
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.style.background = '#3a86ff';
+      btn.style.color = '#fff';
+      btn.innerText = window._lang === 'en' ? 'Claim +500 pts ✖' : 'Забрать +500 очков ✖';
+      btn.onclick = () => {
+        modal.style.display = 'none';
+        score += 500;
+        sfx('coin');
+        if (st === 'shop') shopMsg = window._lang === 'en' ? 'Claimed +500 pts!' : 'Начислено +500 очков за просмотр!';
+        if (wasPlay) st = 'play';
+      };
+    }
+  }, 1000);
+};
 </script>
- <script>
+<script>
+// Автоматическая реклама раз в 1 минуту (5 секунд)
+setInterval(() => {
+  if (st !== 'play') return;
+  if (document.getElementById('adModal').style.display === 'flex') return;
+
+  k.KeyA = 0; k.KeyD = 0; k.ArrowLeft = 0; k.ArrowRight = 0; k.Space = 0;
+  st = 'pause';
+
+  const modal = document.getElementById('autoAdModal');
+  const btn = document.getElementById('autoAdCloseBtn');
+  modal.style.display = 'flex';
+
+  let sec = 5;
+  btn.disabled = true;
+  btn.style.background = '#414868';
+  btn.style.color = '#aaa';
+  btn.innerText = window._lang === 'en' ? `Close in ${sec} sec...` : `Закрыть через ${sec} сек...`;
+
+  const timer = setInterval(() => {
+    sec--;
+    if (sec > 0) {
+      btn.innerText = window._lang === 'en' ? `Close in ${sec} sec...` : `Закрыть через ${sec} сек...`;
+    } else {
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.style.background = '#3a86ff';
+      btn.style.color = '#fff';
+      btn.innerText = window._lang === 'en' ? 'Resume game ✖' : 'Продолжить игру ✖';
+      btn.onclick = () => {
+        modal.style.display = 'none';
+        if (st === 'pause') st = 'play';
+      };
+    }
+  }, 1000);
+}, 60000);
+
+// 6. Переводчик (Английский по умолчанию + кнопка смены языка)
 window._lang = localStorage.getItem('kn_lang') || 'en';
 
 const DICT = {
-  '⏸ Меню (Esc)': '⏸ Menu (Esc)',
-  'Магазин (B)': 'Shop (B)',
-  'Рестарт (R)': 'Restart (R)',
-  '📺 +500 очков (Реклама)': '📺 +500 pts (Ad)',
-  '📺 +1000 очков (Реклама)': '📺 +500 pts (Ad)',
-  '⏸ ПАУЗА / МЕНЮ': '⏸ PAUSE / MENU',
-  'Звук эффектов:': 'SFX Volume:',
-  'Громкость музыки:': 'Music Volume:',
-  'Сложность очков:': 'Score Difficulty:',
-  '÷1 (Обычная)': '÷1 (Normal)',
-  '÷2 (Сложная)': '÷2 (Hard)',
-  '÷5 (Хардкор)': '÷5 (Hardcore)',
-  '÷10 (Кошмар)': '÷10 (Nightmare)',
-  '÷20 (Невозможная)': '÷20 (Impossible)',
-  '💾 Сохранить': '💾 Save',
-  '📂 Загрузить': '📂 Load',
-  '👑 Админ: ВЫКЛ': '👑 Admin: OFF',
-  '👑 Админ: ВКЛ (Бог + 1М)': '👑 Admin: ON (God + 1M)',
-  '▶ Продолжить (Esc)': '▶ Resume (Esc)',
-  '🚪 Выход (Завершить)': '🚪 Quit (End Game)',
-  '📺 РЕКЛАМНАЯ ПАУЗА': '📺 AD BREAK',
-  '📢 РЕКЛАМНЫЙ ПЕРЕРЫВ': '📢 COMMERCIAL BREAK',
-  '[ Место для рекламного баннера 728x90 — вставьте сюда скрипт вашей рекламной сети ]': '[ Banner Ad Space 728x90 ]',
-  '[ Слот для видео-рекламы или блока РСЯ / Adsterra ]': '[ Rewarded Ad Space 300x250 ]',
-  '[ Слот для баннера 300×250 или Interstitial-скрипта ]': '[ Interstitial Ad Space 300x250 ]',
-  '[ Левый баннер\n160×600 ]': '[ Left Ad\n160×600 ]',
-  '[ Правый баннер\n160×600 ]': '[ Right Ad\n160×600 ]',
+  '⏸ Меню (Esc)': '⏸ Menu (Esc)', 'Магазин (B)': 'Shop (B)', 'Рестарт (R)': 'Restart (R)',
+  '📺 +500 очков (Реклама)': '📺 +500 pts (Ad)', '⏸ ПАУЗА / МЕНЮ': '⏸ PAUSE / MENU',
+  'Звук эффектов:': 'SFX Volume:', 'Громкость музыки:': 'Music Volume:',
+  'Сложность очков:': 'Score Difficulty:', '÷1 (Обычная)': '÷1 (Normal)',
+  '÷2 (Сложная)': '÷2 (Hard)', '÷5 (Хардкор)': '÷5 (Hardcore)',
+  '÷10 (Кошмар)': '÷10 (Nightmare)', '÷20 (Невозможная)': '÷20 (Impossible)',
+  '💾 Сохранить': '💾 Save', '📂 Загрузить': '📂 Load',
+  '👑 Админ: ВЫКЛ': '👑 Admin: OFF', '👑 Админ: ВКЛ (Бог + 1М)': '👑 Admin: ON (God + 1M)',
+  '▶ Продолжить (Esc)': '▶ Resume (Esc)', '🚪 Выход (Завершить)': '🚪 Quit (End Game)',
   'Управление: A/D — движение | Пробел — прыжок и ранец | ЛКМ — атака | ПКМ — щит | B — магазин | Esc — меню':
   'Controls: A/D — move | Space — jump & jetpack | LMB — attack | RMB — shield | B — shop | Esc — menu'
 };
@@ -760,16 +768,12 @@ const DICT = {
 const GAME_WORDS = {
   'Лес': 'Forest', 'Пещеры': 'Caves', 'Вулкан': 'Volcano', 'Зима': 'Winter',
   'Руины': 'Ruins', 'Пустыня': 'Desert', 'Замок': 'Castle', 'Бездна': 'Abyss',
-  'Космос': 'Space', 'Ад': 'Hell',
-  'УР:': 'LVL:', 'ОЧКИ:': 'SCORE:', 'БОСС:': 'BOSS:',
+  'Космос': 'Space', 'Ад': 'Hell', 'УР:': 'LVL:', 'ОЧКИ:': 'SCORE:', 'БОСС:': 'BOSS:',
   'МАГАЗИН (Очки:': 'SHOP (Score:', 'ОРУЖИЕ (21)': 'WEAPONS (21)',
-  'БРОНЯ': 'ARMOR', 'ПИТОМЦЫ': 'PETS',
-  '[ВЫБРАНО]': '[EQUIPPED]', 'Выбрать': 'Equip',
-  '[НАДЕТО]': '[EQUIPPED]', 'Надеть': 'Equip',
-  '[С ВАМИ]': '[ACTIVE]', 'Призвать': 'Summon',
+  'БРОНЯ': 'ARMOR', 'ПИТОМЦЫ': 'PETS', '[ВЫБРАНО]': '[EQUIPPED]', 'Выбрать': 'Equip',
+  '[НАДЕТО]': '[EQUIPPED]', 'Надеть': 'Equip', '[С ВАМИ]': '[ACTIVE]', 'Призвать': 'Summon',
   '← Назад': '← Prev', 'Вперед →': 'Next →', 'Стр.': 'Page',
-  'Продолжить (B)': 'Continue (B)',
-  'ИГРА ОКОНЧЕНА (Нажми R)': 'GAME OVER (Press R)',
+  'Продолжить (B)': 'Continue (B)', 'ИГРА ОКОНЧЕНА (Нажми R)': 'GAME OVER (Press R)',
   '🏆 ТАБЛИЦА РЕКОРДОВ (ТОП-5):': '🏆 HIGH SCORES (TOP-5):',
   'место —': 'place —', 'очков': 'pts', 'оч.': 'pts',
   'Ржавый меч': 'Rusty Sword', 'Кинжал': 'Dagger', 'Копье': 'Spear',
@@ -809,13 +813,13 @@ function toggleLang() {
   applyLang();
 }
 
-const bBar = document.querySelector('.bar');
-if (bBar && !document.getElementById('langBtn')) {
+const bBar2 = document.querySelector('.bar');
+if (bBar2 && !document.getElementById('langBtn')) {
   const lb = document.createElement('button');
   lb.id = 'langBtn';
   lb.innerText = window._lang === 'en' ? '🌐 Language: EN' : '🌐 Язык: RU';
   lb.onclick = toggleLang;
-  bBar.appendChild(lb);
+  bBar2.appendChild(lb);
 }
 
 const _origFillText = CanvasRenderingContext2D.prototype.fillText;
@@ -828,144 +832,13 @@ CanvasRenderingContext2D.prototype.fillText = function(text, x, y, maxW) {
   return _origFillText.call(this, text, x, y, maxW);
 };
 
-// Перевод динамических надписей на кнопках рекламы
-setInterval(() => {
-  if (window._lang !== 'en') return;
-  const b1 = document.getElementById('adCloseBtn');
-  if (b1 && b1.innerText.includes('Подождите')) b1.innerText = b1.innerText.replace('Подождите', 'Wait').replace('сек...', 'sec...');
-  if (b1 && b1.innerText.includes('Забрать')) b1.innerText = b1.innerText.replace('Забрать', 'Claim').replace('очков', 'pts');
-  const b2 = document.getElementById('autoAdCloseBtn');
-  if (b2 && b2.innerText.includes('Закрыть через')) b2.innerText = b2.innerText.replace('Закрыть через', 'Close in').replace('сек...', 'sec...');
-  if (b2 && b2.innerText.includes('Продолжить игру')) b2.innerText = 'Resume game ✖';
-}, 300);
-
 if (!localStorage.getItem('kn_lang') && navigator.language && navigator.language.startsWith('ru')) {
   window._lang = 'ru';
 }
 setTimeout(applyLang, 150);
 </script>
-</script>
-  <!-- 1. Нижний рекламный баннер MyBid (300x100) -->
-<!-- 1. Нижний рекламный баннер MyBid (300x100) -->
-<div id="adBanner" style="margin:10px auto 0 auto; width:300px; height:100px; background:#161925; display:flex; align-items:center; justify-content:center; border-radius:6px; overflow:hidden;">
-  <div data-banner-id="2031959"></div>
-</div>
 
-<!-- 2. Окно рекламы за награду (+500 очков, 10 сек) -->
-<div id="adModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:200; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
-  <div style="background:#1a1d2e; border:2px solid #ffd166; padding:24px; border-radius:10px; width:360px; text-align:center;">
-    <h3 style="margin:0 0 12px 0; color:#ffd166;">📺 AD BREAK</h3>
-    <div id="adVideoSlot" style="width:300px; height:250px; margin:0 auto 14px auto; background:#0d0e14; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-      <div data-banner-id="2031958"></div>
-    </div>
-    <button id="adCloseBtn" disabled style="padding:10px 20px; font-size:14px; background:#414868; color:#aaa; border:none; border-radius:6px;">Wait 10 sec...</button>
-  </div>
-</div>
-
-<!-- 3. Окно автоматической рекламы раз в 1 минуту (5 сек) -->
-<div id="autoAdModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:250; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
-  <div style="background:#1a1d2e; border:2px solid #4cc9f0; padding:24px; border-radius:10px; width:360px; text-align:center;">
-    <h3 style="margin:0 0 12px 0; color:#4cc9f0;">📢 COMMERCIAL BREAK</h3>
-    <div id="autoAdSlot" style="width:300px; height:250px; margin:0 auto 14px auto; background:#0d0e14; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-      <div data-banner-id="2031958"></div>
-    </div>
-    <button id="autoAdCloseBtn" disabled style="padding:10px 20px; font-size:14px; background:#414868; color:#aaa; border:none; border-radius:6px;">Close in 5 sec...</button>
-  </div>
-</div>
-
-<script>
-// Переделываем кнопку "Донат" в "+500 очков (Реклама)"
-const donBtn500 = document.querySelector('.don');
-if (donBtn500) {
-  donBtn500.innerText = window._lang === 'en' ? '📺 +500 pts (Ad)' : '📺 +500 очков (Реклама)';
-  donBtn500.style.background = '#0077b6';
-  donBtn500.style.borderColor = '#4cc9f0';
-}
-
-// Проверяем, не пропала ли кнопка "Рестарт (R)", и возвращаем её при необходимости
-const barCheck = document.querySelector('.bar');
-if (barCheck && !barCheck.innerText.includes('Рестарт') && !barCheck.innerText.includes('Restart')) {
-  const rBtn = document.createElement('button');
-  rBtn.innerText = window._lang === 'en' ? 'Restart (R)' : 'Рестарт (R)';
-  rBtn.onclick = () => { if (typeof resetGame === 'function') resetGame(); else if (typeof gen === 'function') { score = 0; lives = 3; lvl = 1; st = 'play'; gen(); } };
-  barCheck.insertBefore(rBtn, donBtn500 || null);
-}
-
-// Реклама за +500 очков (таймер 10 секунд)
-donate = function() {
-  k.KeyA = 0; k.KeyD = 0; k.ArrowLeft = 0; k.ArrowRight = 0; k.Space = 0;
-  const wasPlay = (st === 'play');
-  if (wasPlay) st = 'pause';
-  
-  const modal = document.getElementById('adModal');
-  const btn = document.getElementById('adCloseBtn');
-  modal.style.display = 'flex';
-  
-  let sec = 10;
-  btn.disabled = true;
-  btn.style.background = '#414868';
-  btn.style.color = '#aaa';
-  btn.innerText = window._lang === 'en' ? `Wait ${sec} sec...` : `Подождите ${sec} сек...`;
-
-  const timer = setInterval(() => {
-    sec--;
-    if (sec > 0) {
-      btn.innerText = window._lang === 'en' ? `Wait ${sec} sec...` : `Подождите ${sec} сек...`;
-    } else {
-      clearInterval(timer);
-      btn.disabled = false;
-      btn.style.background = '#3a86ff';
-      btn.style.color = '#fff';
-      btn.innerText = window._lang === 'en' ? 'Claim +500 pts ✖' : 'Забрать +500 очков ✖';
-      btn.onclick = () => {
-        modal.style.display = 'none';
-        score += 500;
-        sfx('coin');
-        if (st === 'shop') shopMsg = window._lang === 'en' ? 'Claimed +500 pts!' : 'Начислено +500 очков за просмотр!';
-        if (wasPlay) st = 'play';
-      };
-    }
-  }, 1000);
-};
-
-// Автоматическая реклама раз в 1 минуту (таймер 5 секунд)
-setInterval(() => {
-  if (st !== 'play') return;
-  if (document.getElementById('adModal').style.display === 'flex') return;
-
-  k.KeyA = 0; k.KeyD = 0; k.ArrowLeft = 0; k.ArrowRight = 0; k.Space = 0;
-  st = 'pause';
-
-  const modal = document.getElementById('autoAdModal');
-  const btn = document.getElementById('autoAdCloseBtn');
-  modal.style.display = 'flex';
-
-  let sec = 5;
-  btn.disabled = true;
-  btn.style.background = '#414868';
-  btn.style.color = '#aaa';
-  btn.innerText = window._lang === 'en' ? `Close in ${sec} sec...` : `Закрыть через ${sec} сек...`;
-
-  const timer = setInterval(() => {
-    sec--;
-    if (sec > 0) {
-      btn.innerText = window._lang === 'en' ? `Close in ${sec} sec...` : `Закрыть через ${sec} сек...`;
-    } else {
-      clearInterval(timer);
-      btn.disabled = false;
-      btn.style.background = '#3a86ff';
-      btn.style.color = '#fff';
-      btn.innerText = window._lang === 'en' ? 'Resume game ✖' : 'Продолжить игру ✖';
-      btn.onclick = () => {
-        modal.style.display = 'none';
-        if (st === 'pause') st = 'play';
-      };
-    }
-  }, 1000);
-}, 60000);
-</script>
-
+<!-- 7. Главный скрипт MyBid -->
 <script async src="https://mbidadm.com" data-admpid="472878"></script>
-
 </body>
 </html>
